@@ -1,8 +1,11 @@
 {
-  "name": "openclaw-plugin-searxng-search",
+  "name": "searxng-tools",
   "version": "1.0.0",
-  "description": "SearXNG search plugin for OpenClaw - free, private web search",
+  "description": "Universal SearXNG search tools for AI agents and OpenClaw - free, private web search",
   "main": "index.ts",
+  "openclaw": {
+    "extensions": ["./index.ts"]
+  },
   "scripts": {
     "build": "tsc",
     "typecheck": "tsc --noEmit"
@@ -11,7 +14,8 @@
     "openclaw",
     "plugin",
     "searxng",
-    "search"
+    "search",
+    "privacy"
   ],
   "author": "OpenClaw User",
   "license": "MIT",
