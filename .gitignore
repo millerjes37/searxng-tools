@@ -20,3 +20,7 @@ Thumbs.db
 
 # Backup files
 *.backup
+
+# Coverage reports
+coverage/
+.nyc_output/

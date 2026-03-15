@@ -2,13 +2,20 @@
   "name": "searxng-tools",
   "version": "1.0.0",
   "description": "Universal SearXNG search tools for AI agents and OpenClaw - free, private web search",
-  "main": "index.ts",
+  "main": "src/index.ts",
   "openclaw": {
-    "extensions": ["./index.ts"]
+    "extensions": [
+      "./src/index.ts"
+    ]
   },
   "scripts": {
     "build": "tsc",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:ui": "vitest --ui",
+    "lint": "tsc --noEmit"
   },
   "keywords": [
     "openclaw",
@@ -27,7 +34,10 @@
   "devDependencies": {
     "@types/jsdom": "^21.1.6",
     "@types/node": "^20.10.0",
-    "typescript": "^5.3.0"
+    "@vitest/coverage-v8": "^4.1.0",
+    "typescript": "^5.3.0",
+    "vitest": "^4.1.0",
+    "vitest-fetch-mock": "^0.4.5"
   },
   "engines": {
     "node": ">=18.0.0"
