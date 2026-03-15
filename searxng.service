@@ -1,0 +1,33 @@
+[Unit]
+Description=SearXNG Search Server
+Documentation=https://docs.searxng.org/
+Requires=docker.service
+After=docker.service network.target
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=5
+WorkingDirectory=/home/jackson/dev/searxng-tools
+
+# Check if container exists and is running
+ExecStartPre=-/usr/bin/docker stop searxng-server
+ExecStartPre=-/usr/bin/docker rm searxng-server
+ExecStartPre=/usr/bin/docker pull searxng/searxng:latest
+
+# Start the container
+ExecStart=/usr/bin/docker run \
+    --name searxng-server \
+    --rm \
+    -p 8888:8080 \
+    -v /home/jackson/dev/searxng-tools/searxng-config:/etc/searxng \
+    -e SEARXNG_BASE_URL=http://localhost:8888/ \
+    -e SEARXNG_INSTANCE_NAME=SearXNG Tools Server \
+    searxng/searxng:latest
+
+# Stop and cleanup
+ExecStop=-/usr/bin/docker stop -t 30 searxng-server
+ExecStopPost=-/usr/bin/docker rm searxng-server
+
+[Install]
+WantedBy=multi-user.target

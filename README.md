@@ -84,6 +84,54 @@ openclaw gateway restart
 
 ---
 
+## Ensuring SearXNG Stays Running
+
+To make sure SearXNG is always available when OpenClaw needs it, use one of these methods:
+
+### Option 1: Systemd Service (Recommended)
+
+Set up SearXNG as a systemd service that starts automatically:
+
+```bash
+# Install the systemd service
+sudo cp searxng.service /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable searxng.service
+sudo systemctl start searxng.service
+
+# Optionally make OpenClaw depend on SearXNG
+# See SYSTEMD.md for detailed instructions
+```
+
+### Option 2: Docker Auto-Restart
+
+The Docker Compose configuration already includes auto-restart:
+
+```bash
+# SearXNG will restart automatically unless manually stopped
+docker-compose up -d
+```
+
+### Option 3: Health Check Script
+
+Use the included health check script:
+
+```bash
+# Check if SearXNG is running
+./check-searxng.sh check
+
+# Start SearXNG if not running
+./check-searxng.sh ensure
+
+# Add to crontab to check every 5 minutes
+crontab -e
+# Add: */5 * * * * /path/to/searxng-tools/check-searxng.sh ensure
+```
+
+**📖 For detailed instructions, see [SYSTEMD.md](SYSTEMD.md)**
+
+---
+
 ## Detailed Installation
 
 ### Prerequisites
