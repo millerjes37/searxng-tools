@@ -25,14 +25,21 @@ SearXNG Tools is a comprehensive search plugin that provides AI agents with free
 
 ## Quick Start (5 minutes)
 
-### 1. Start SearXNG with Docker
+This plugin requires **two components** to work:
+
+1. **SearXNG Server** - The search engine (runs via Docker)
+2. **OpenClaw Plugin** - The interface to OpenClaw
+
+### 1. Start SearXNG Server (Required)
+
+The SearXNG server must be running before the plugin can work. This is a **separate** service from the plugin.
 
 ```bash
 # Clone the repository
 git clone https://github.com/millerjes37/searxng-tools.git
 cd searxng-tools
 
-# Start SearXNG server
+# Start SearXNG server (Docker container)
 ./install.sh
 ```
 
@@ -42,7 +49,15 @@ Or manually with Docker Compose:
 docker-compose up -d
 ```
 
+**Verify it's running:**
+```bash
+curl http://localhost:8888/healthz
+# Should return: OK
+```
+
 ### 2. Install the OpenClaw Plugin
+
+This is a **separate** step from starting the SearXNG server:
 
 ```bash
 # Copy plugin to OpenClaw extensions
@@ -175,16 +190,20 @@ The easiest way to set up SearXNG is using the included Docker Compose configura
 docker-compose up -d
 ```
 
-### Quick Install
+### Quick Install (Plugin Only)
+
+⚠️ **Important:** This installs only the OpenClaw plugin. You must set up the SearXNG server separately (see Step 1 in Quick Start above).
 
 ```bash
 # Clone the repository
 git clone https://github.com/millerjes37/searxng-tools.git
 
-# Install the plugin
+# Install the OpenClaw plugin
 cd searxng-tools
 openclaw plugins install .
 ```
+
+**Note:** `openclaw plugins install` only installs the plugin files. It does NOT set up the SearXNG Docker container or systemd service. You must complete Step 1 (SearXNG server setup) separately.
 
 ### Manual Installation
 
@@ -344,6 +363,24 @@ SearXNG Tools │ searxng-tools │ loaded │ ~/.openclaw/extensions/searxng-to
 ```
 
 ## Troubleshooting
+
+### "Connection Refused" or "Cannot connect to SearXNG"
+
+**Problem:** Plugin is installed but searches fail with connection errors.
+
+**Cause:** You haven't started the SearXNG server yet. The plugin and server are two separate components.
+
+**Solution:**
+```bash
+# Start the SearXNG server (Step 1 in Quick Start)
+cd ~/dev/searxng-tools  # or wherever you cloned the repo
+docker-compose up -d
+
+# Verify it's running
+curl http://localhost:8888/healthz
+```
+
+**Remember:** `openclaw plugins install` only installs the plugin files, it does NOT start the SearXNG Docker container. You must start SearXNG separately.
 
 ### Plugin Not Loading
 
