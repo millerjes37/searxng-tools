@@ -84,6 +84,36 @@ openclaw gateway restart
 
 ---
 
+## Bonus: Use SearXNG for Personal Browsing Too! 🌐
+
+Since you have SearXNG running, why not use it as your default search engine in your web browser? Get the same privacy benefits for your personal searches!
+
+### Quick Browser Setup
+
+**Chrome/Chromium/Edge:**
+1. Go to `chrome://settings/searchEngines`
+2. Click "Add" next to "Site search"
+3. Enter:
+   - **Search engine:** `SearXNG Local`
+   - **Shortcut:** `sx`
+   - **URL:** `http://localhost:8888/search?q=%s`
+4. Click "Add"
+5. Click three dots → "Make default" (optional)
+
+**Firefox:**
+1. Visit `http://localhost:8888`
+2. Click the magnifying glass icon in search bar
+3. Click "Add SearXNG"
+4. Check "Make this the current search engine"
+
+**Then use it:**
+- Type `sx` + Tab in address bar, then search
+- Or just search directly if set as default
+
+📖 **[Complete browser setup guide →](BROWSER.md)**
+
+---
+
 ## Ensuring SearXNG Stays Running
 
 To make sure SearXNG is always available when OpenClaw needs it, use one of these methods:
