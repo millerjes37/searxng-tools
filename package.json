@@ -1,0 +1,31 @@
+{
+  "name": "openclaw-plugin-searxng-search",
+  "version": "1.0.0",
+  "description": "SearXNG search plugin for OpenClaw - free, private web search",
+  "main": "index.ts",
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "openclaw",
+    "plugin",
+    "searxng",
+    "search"
+  ],
+  "author": "OpenClaw User",
+  "license": "MIT",
+  "dependencies": {
+    "@mozilla/readability": "^0.5.0",
+    "jsdom": "^24.0.0",
+    "turndown": "^7.1.2"
+  },
+  "devDependencies": {
+    "@types/jsdom": "^21.1.6",
+    "@types/node": "^20.10.0",
+    "typescript": "^5.3.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
