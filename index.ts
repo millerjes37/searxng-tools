@@ -220,6 +220,69 @@ let Readability: any;
 let JSDOM: any;
 let TurndownService: any;
 
+// Error message helper
+function formatErrorMessage(error: any, searxngUrl: string): string {
+  const errorMessage = error?.message || String(error);
+  
+  // Check for connection refused or network errors
+  if (errorMessage.includes('ECONNREFUSED') || 
+      errorMessage.includes('Connection refused') ||
+      errorMessage.includes('Failed to fetch') ||
+      errorMessage.includes('NetworkError') ||
+      errorMessage.includes('connect ECONNREFUSED')) {
+    return `🔴 SearXNG Server Not Running
+
+The plugin cannot connect to SearXNG at ${searxngUrl}
+
+This usually means the SearXNG Docker container or systemd service is not running.
+
+📖 To fix this, set up the SearXNG server:
+
+Step 1 - Start SearXNG with Docker:
+   cd ~/dev/searxng-tools
+   docker-compose up -d
+
+Or use the systemd service:
+   sudo cp searxng.service /etc/systemd/system/
+   sudo systemctl enable --now searxng.service
+
+Step 2 - Verify it's running:
+   curl http://localhost:8888/healthz
+
+📚 Full documentation:
+   Quick Start: https://github.com/millerjes37/searxng-tools#quick-start-5-minutes
+   Docker Setup: https://github.com/millerjes37/searxng-tools/blob/main/DOCKER.md
+   Systemd Setup: https://github.com/millerjes37/searxng-tools/blob/main/SYSTEMD.md
+
+💡 Reminder: The OpenClaw plugin and SearXNG server are separate components.
+   'openclaw plugins install' only installs the plugin, not the server.`;
+  }
+  
+  // Check for timeout errors
+  if (errorMessage.includes('timeout') || errorMessage.includes('AbortError')) {
+    return `⏱️ Search Timeout
+
+The request to SearXNG at ${searxngUrl} timed out.
+
+Possible causes:
+- SearXNG is still starting up (wait a few seconds and try again)
+- Network connectivity issues
+- SearXNG is overloaded
+
+Try again in a moment, or check if SearXNG is running:
+   curl http://localhost:8888/healthz
+
+📚 Troubleshooting: https://github.com/millerjes37/searxng-tools/blob/main/DOCKER.md#troubleshooting`;
+  }
+  
+  // Default error message
+  return `❌ Search failed: ${errorMessage}
+
+Please ensure SearXNG is running at ${searxngUrl}
+
+📖 Setup instructions: https://github.com/millerjes37/searxng-tools#quick-start-5-minutes`;
+}
+
 // Helper functions
 function formatSearchResults(query: string, results: SearchResult[], total?: number, maxResults: number = 10): string {
   if (!results || results.length === 0) {
@@ -581,7 +644,7 @@ export default function searxngSearchPlugin(api: PluginApi) {
         return { content: [{ type: 'text', text: resultText }] };
       } catch (error: any) {
         logger.error('web_search error:', error.message);
-        throw new Error(`Search failed: ${error.message}. Please ensure SearXNG is running at ${pluginConfig.searxngUrl || 'http://localhost:8888'}`);
+        throw new Error(formatErrorMessage(error, pluginConfig.searxngUrl || 'http://localhost:8888'));
       }
     }
   });
@@ -637,7 +700,7 @@ export default function searxngSearchPlugin(api: PluginApi) {
         return { content: [{ type: "text", text: resultText }] };
       } catch (error: any) {
         logger.error('image_search error:', error.message);
-        throw new Error(`Image search failed: ${error.message}`);
+        throw new Error(formatErrorMessage(error, pluginConfig.searxngUrl || 'http://localhost:8888'));
       }
     }
   });
@@ -691,7 +754,7 @@ export default function searxngSearchPlugin(api: PluginApi) {
         return { content: [{ type: "text", text: resultText }] };
       } catch (error: any) {
         logger.error('news_search error:', error.message);
-        throw new Error(`News search failed: ${error.message}`);
+        throw new Error(formatErrorMessage(error, pluginConfig.searxngUrl || 'http://localhost:8888'));
       }
     }
   });
@@ -747,7 +810,7 @@ export default function searxngSearchPlugin(api: PluginApi) {
         return { content: [{ type: "text", text: resultText }] };
       } catch (error: any) {
         logger.error('video_search error:', error.message);
-        throw new Error(`Video search failed: ${error.message}`);
+        throw new Error(formatErrorMessage(error, pluginConfig.searxngUrl || 'http://localhost:8888'));
       }
     }
   });
@@ -801,7 +864,7 @@ export default function searxngSearchPlugin(api: PluginApi) {
         return { content: [{ type: "text", text: resultText }] };
       } catch (error: any) {
         logger.error('technical_search error:', error.message);
-        throw new Error(`Technical search failed: ${error.message}`);
+        throw new Error(formatErrorMessage(error, pluginConfig.searxngUrl || 'http://localhost:8888'));
       }
     }
   });
@@ -829,7 +892,7 @@ export default function searxngSearchPlugin(api: PluginApi) {
         return { content: [{ type: "text", text: resultText }] };
       } catch (error: any) {
         logger.error('search_suggestions error:', error.message);
-        throw new Error(`Failed to get suggestions: ${error.message}`);
+        throw new Error(formatErrorMessage(error, pluginConfig.searxngUrl || 'http://localhost:8888'));
       }
     }
   });
@@ -905,7 +968,7 @@ export default function searxngSearchPlugin(api: PluginApi) {
         
       } catch (error: any) {
         logger.error('fetch_url error:', error.message);
-        throw new Error(`Failed to fetch URL: ${error.message}`);
+        throw new Error(formatErrorMessage(error, pluginConfig.searxngUrl || 'http://localhost:8888'));
       }
     }
   });
